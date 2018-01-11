@@ -9,11 +9,28 @@
 #MIN_LATITUDE=-8.9
 #MAX_LATITUDE=-5.8
 
-FILENAME=shanghai
-MIN_LONGITUDE=121.202107
-MAX_LONGITUDE=121.978326
-MIN_LATITUDE=30.760658
-MAX_LATITUDE=31.525632
+#FILENAME=shanghai
+#MIN_LONGITUDE=121.202107
+#MAX_LONGITUDE=121.978326
+#MIN_LATITUDE=30.760658
+#MAX_LATITUDE=31.525632
+
+# Read and validate command-line arguments
+# Read Longitude values
+if ![ ! -z $1 -a $1 -ge -180 -a $1 -le 178.9 ]
+then MIN_LONGITUDE = $1
+else
+  echo "The value $1 is invalid. Please reenter."
+  exit 1
+fi
+
+if ![ ! -z $2 -a $2 -ge -179 -a $2 -le 179.9 ]
+then MAX_LONGITUDE = $2
+else
+  echo "The value $2 is invalid. Please reenter."
+  exit 1
+fi
+
 
 ###########################################################
 GPX="$FILENAME.gpx"
