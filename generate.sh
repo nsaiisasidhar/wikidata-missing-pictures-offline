@@ -16,21 +16,40 @@
 #MAX_LATITUDE=31.525632
 
 # Read and validate command-line arguments
-# Read Longitude values
-if ![ ! -z $1 -a $1 -ge -180 -a $1 -le 178.9 ]
-then MIN_LONGITUDE = $1
-else
-  echo "The value $1 is invalid. Please reenter."
+if [ "$#" ne 5 ] ; then
+  echo "Please enter miniumum longitude, maximum longitude, minimum latitude, maximum latitude, language code."
   exit 1
 fi
 
-if ![ ! -z $2 -a $2 -ge -179 -a $2 -le 179.9 ]
-then MAX_LONGITUDE = $2
-else
-  echo "The value $2 is invalid. Please reenter."
-  exit 1
+regNum='^-?[0-9]+([.][0-9]+)?$'
+regLan='^[a-zA-Z-]+$'
+if ! [[ $1 =~ $regNum ]] ; then echo "Error: $0 is not a valid number"; exit 1
+   elif ! [[ $2 =~ $regNum ]] ; then echo "Error: $1 is not a valid number"; exit 1
+   elif ! [[ $3 =~ $regNum ]] ; then echo "Error: $2 is not a valid number"; exit 1
+   elif ! [[ $4 =~ $regNum ]] ; then echo "Error: $3 is not a valid number"; exit 1
+   elif ! [[ $5 =~ $regLan ]] ; then echo "Error: $4 is not a valid language code"; exit 1
 fi
 
+# Read and validate Longitude & Latitude values
+if ![ ! -z $1 -a $1 -ge -180 -a $1 -le 178.9 ] ; then MIN_LONGITUDE = $1
+else
+  echo "The value $1 is invalid longitude value. Please reenter."; exit 1
+fi
+
+if ![ ! -z $2 -a $2 -ge -179 -a $2 -le 179.9 ] ; then MAX_LONGITUDE = $2
+else
+  echo "The value $2 is invalid longitude value. Please reenter."; exit 1
+fi
+
+if ![ ! -z $3 -a $3 -ge -180 -a $3 -le 178.9 ] ; then MIN_LATITUDE = $3
+else
+  echo "The value $3 is invalid latitude value. Please reenter."; exit 1
+fi
+
+if ![ ! -z $4 -a $4 -ge -179 -a $4 -le 179.9 ] ; then MAX_LATITUDE = $4
+else
+  echo "The value $4 is invalid latitude value. Please reenter."; exit 1
+fi
 
 ###########################################################
 GPX="$FILENAME.gpx"
