@@ -16,40 +16,32 @@
 #MAX_LATITUDE=31.525632
 
 # Read and validate command-line arguments
-if [ "$#" ne 5 ] ; then
-  echo "Please enter miniumum longitude, maximum longitude, minimum latitude, maximum latitude, language code."
-  exit 1
+regNum='^-?[0-9]*[.][0-9]*$'
+
+# Read and validate longitude values
+read -p "Enter Longitudes: " min_lon max_lon
+
+if [ $min_lon -eq NULL ] || [ $max_lon -eq NULL ]; then echo "The longitudes cannot be null"; exit 1
+elif ! [[ $min_lon =~ $regNum ]] || ![ ! -z $min_lon -a $min_lon -ge -180 -a $min_lon -le 178.9 ]; then echo "The "$min_lon" value is invalid"; exit 1
+elif ! [[ $max_lon =~ $regNum ]] || ![ ! -z $max_lon -a $max_lon -ge -180 -a $max_lon -le 178.9 ]; then echo "The "$max_lon" value is invalid"; exit 1
 fi
 
-regNum='^-?[0-9]+([.][0-9]+)?$'
-regLan='^[a-zA-Z-]+$'
-if ! [[ $1 =~ $regNum ]] ; then echo "Error: $0 is not a valid number"; exit 1
-   elif ! [[ $2 =~ $regNum ]] ; then echo "Error: $1 is not a valid number"; exit 1
-   elif ! [[ $3 =~ $regNum ]] ; then echo "Error: $2 is not a valid number"; exit 1
-   elif ! [[ $4 =~ $regNum ]] ; then echo "Error: $3 is not a valid number"; exit 1
-   elif ! [[ $5 =~ $regLan ]] ; then echo "Error: $4 is not a valid language code"; exit 1
+# Read and validate latitude values
+read -p "Enter Latitudes: " min_lat max_lat
+ 
+if [ $min_lat -eq NULL ] || [ $max_lat -eq NULL ]; then echo "The latitudes cannot be null"; exit 1
+elif ! [[ $min_lat =~ $regNum ]] || ![ ! -z $min_lat -a $min_lat -ge -180 -a $min_lat -le 178.9 ]; then echo "The "$min_lat" value is invalid"; exit 1
+elif ! [[ $max_lat =~ $regNum ]] || ![ ! -z $max_lat -a $max_lat -ge -180 -a $max_lat -le 178.9 ]; then echo "The "$max_lat" value is invalid"; exit 1
 fi
 
-# Read and validate Longitude & Latitude values
-if ![ ! -z $1 -a $1 -ge -180 -a $1 -le 178.9 ] ; then MIN_LONGITUDE = $1
-else
-  echo "The value $1 is invalid longitude value. Please reenter."; exit 1
+# Read and validate language 
+read -p "Enter language code: " $lan
+
+request="curl -g -s https://query.wikidata.org/sparql?query=ASK{?lang%20wdt:P424%20\"$lan\"}"
+if $request | grep -q "true"; then 
+else echo "The language entered is invalid"; exit 1
 fi
 
-if ![ ! -z $2 -a $2 -ge -179 -a $2 -le 179.9 ] ; then MAX_LONGITUDE = $2
-else
-  echo "The value $2 is invalid longitude value. Please reenter."; exit 1
-fi
-
-if ![ ! -z $3 -a $3 -ge -180 -a $3 -le 178.9 ] ; then MIN_LATITUDE = $3
-else
-  echo "The value $3 is invalid latitude value. Please reenter."; exit 1
-fi
-
-if ![ ! -z $4 -a $4 -ge -179 -a $4 -le 179.9 ] ; then MAX_LATITUDE = $4
-else
-  echo "The value $4 is invalid latitude value. Please reenter."; exit 1
-fi
 
 ###########################################################
 GPX="$FILENAME.gpx"
